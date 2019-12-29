@@ -121,7 +121,8 @@ class ViewController: UIViewController {
                 letterButton.titleLabel?.font = UIFont.systemFont(ofSize: 36)
                 letterButton.setTitle("WWW", for: .normal)
                 letterButton.addTarget(self, action: #selector(letterTapped(_:)), for: .touchUpInside)
-                
+                letterButton.layer.borderColor = UIColor.green.cgColor
+                letterButton.layer.borderWidth = 1
                 let frame = CGRect(x: column * width, y: row * height, width: width, height: height)
                 letterButton.frame = frame
                 
@@ -133,10 +134,6 @@ class ViewController: UIViewController {
 
             }
         }
-        
-//        cluesLabel.backgroundColor = .red
-//        answersLabel.backgroundColor = .blue
-//        buttonView.backgroundColor = .green
     }
 
     override func viewDidLoad() {
@@ -170,16 +167,35 @@ class ViewController: UIViewController {
             currentAnswer.text = ""
 
             score += 1
-            
-            if score % 7 == 0 {
-                let ac = UIAlertController(title: "Well Done!", message: "Do you want to go to the next level?", preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: levelUp))
-                present(ac, animated: true, completion: nil)
+            var allHidden: Bool = true
+
+            letterButtons.forEach({ (btn) in
+                if !btn.isHidden {
+                    allHidden = false
+                }
+            })
+            if allHidden {
+                    let ac = UIAlertController(title: "Well Done!", message: "Do you want to go to the next level?", preferredStyle: .alert)
+                    ac.addAction(UIAlertAction(title: "OK", style: .default, handler: levelUp))
+                    present(ac, animated: true, completion: nil)
+                }
             }
-        }
+         
         else {
             print("wrong")
+            let ac = UIAlertController(title: "WRONG!", message: "Try again", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: wrongAnswer))
+            present(ac, animated: true, completion: nil)
         }
+    }
+    
+    func wrongAnswer(action: UIAlertAction) {
+        
+//        letterButtons.forEach { (btn) in
+//            btn.isHidden = false
+//        }
+//        currentAnswer.text = ""
+        score -= 1
     }
     
     func levelUp(action: UIAlertAction) {
